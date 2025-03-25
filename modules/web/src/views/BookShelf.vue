@@ -54,6 +54,17 @@
             >
               {{ connectStatus }}
             </el-tag>
+            <el-tag
+              v-if="connectType == 'danger'"
+              type="primary"
+              size="large"
+              class="setting-connect"
+              @click="reconnectRemoteUrl"
+            >
+              <el-icon>
+                <refresh-icon />
+              </el-icon>
+            </el-tag>
           </div>
         </div>
       </div>
@@ -84,7 +95,10 @@ import '@/assets/fonts/shelffont.css'
 import { useBookStore } from '@/store'
 import githubUrl from '@/assets/imgs/github.png'
 import { useLoading } from '@/hooks/loading'
-import { Search as SearchIcon } from '@element-plus/icons-vue'
+import {
+  Refresh as RefreshIcon,
+  Search as SearchIcon,
+} from '@element-plus/icons-vue'
 import { baseURL_localStorage_key } from '@/api/axios'
 import API, {
   legado_http_entry_point,
@@ -186,6 +200,7 @@ const setLegadoRetmoteUrl = () => {
       confirmButtonText: '确定',
       cancelButtonText: '取消',
       inputPlaceholder: legado_http_entry_point,
+      inputValue: legado_http_entry_point,
       inputValidator: value => validatorHttpUrl(value),
       inputErrorMessage: '输入的格式不对',
       beforeClose: (action, instance, done) => {
@@ -222,6 +237,12 @@ const setLegadoRetmoteUrl = () => {
       },
     },
   )
+}
+
+const reconnectRemoteUrl = () => {
+  connectionStore.setConnectStatus('正在连接后端服务器……')
+  connectionStore.setConnectType('primary')
+  loadingWrapper(loadShelf())
 }
 
 const router = useRouter()
@@ -389,6 +410,10 @@ onMounted(() => {
         margin-top: 16px;
         /*         // color: #6B7C87; */
         cursor: pointer;
+
+        + .setting-connect {
+          margin-left: 8px;
+        }
       }
     }
 
